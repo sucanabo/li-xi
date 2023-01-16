@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:lixi/widget/lixi.dart';
 
@@ -40,37 +39,49 @@ class LixiItemModel {
 }
 
 class _MainPageState extends State<MainPage> {
-
   final List<int> moneys = [100, 50, 10, 50, 20, 500, 35, 20, 1];
   late final List<LixiItemModel> models;
 
-  bool isFlippedAll = false;
+  bool _isFlippedAll = false;
+  bool _isShuffle = false;
 
   @override
   void initState() {
     super.initState();
-    models = List.generate(moneys.length, (index) =>
-        LixiItemModel(key: GlobalKey<LixiState>(), content: '${moneys[index]}K'));
+    models = List.generate(moneys.length,
+        (index) => LixiItemModel(key: GlobalKey<LixiState>(), content: '${moneys[index]}K'));
   }
 
   shuffle() {
-
+    setState(() {
+      _isShuffle = true;
+    });
   }
 
-  flipAll() {
+  closeAll() {
     for (var item in models) {
       final lixiItem = item.key.currentState;
-      if(lixiItem!.isFlipped == isFlippedAll && _isFlippedAllCard()){
+      if (lixiItem!.isFlipped == _isFlippedAll) {
         continue;
       }
       lixiItem.flipCard();
     }
     setState(() {
-      isFlippedAll = !isFlippedAll;
+      _isFlippedAll = false;
     });
   }
-  _isFlippedAllCard(){
-    return models.any((element) => element.key.currentState!.isFlipped && element.key.currentState!.isFlipped != isFlippedAll);
+
+  flipAll() {
+    for (var item in models) {
+      final lixiItem = item.key.currentState;
+      if (lixiItem!.isFlipped == _isFlippedAll) {
+        continue;
+      }
+      lixiItem.flipCard();
+    }
+    setState(() {
+      _isFlippedAll = true;
+    });
   }
 
   @override
@@ -84,7 +95,10 @@ class _MainPageState extends State<MainPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                ElevatedButton(onPressed: flipAll, child: Text('Xem')),
+                ElevatedButton(
+                  onPressed: _isFlippedAll ? closeAll : flipAll,
+                  child: Text('${_isFlippedAll ? 'Úm hết' : 'Xem hết'}'),
+                ),
                 ElevatedButton(onPressed: shuffle, child: Text('Trộn')),
               ],
             ),
@@ -100,11 +114,11 @@ class _MainPageState extends State<MainPage> {
                   mainAxisSpacing: 20,
                   childAspectRatio: 0.75,
                 ),
-                itemBuilder: (context, index) =>
-                    Lixi(
-                      key: models[index].key,
-                      content: models[index].content,
-                    ),
+                itemBuilder: (context, index) => Lixi(
+                  key: models[index].key,
+                  content: models[index].content,
+
+                ),
               ),
             ),
           ],

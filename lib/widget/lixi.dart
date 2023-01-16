@@ -7,10 +7,12 @@ class Lixi extends StatefulWidget {
   final double width;
   final String content;
   final bool initFlip;
+  final Function() onSelect;
 
   const Lixi({
     Key? key,
     required this.content,
+    required this.onSelect,
     this.initFlip = false,
     this.width = 310,
     this.height = 474,
@@ -28,7 +30,6 @@ class LixiState extends State<Lixi> {
   void initState() {
     super.initState();
     isFlipped = widget.initFlip;
-    print('isFliiped: ${widget.initFlip}');
   }
 
   flipCard({bool? show}) {
@@ -36,11 +37,15 @@ class LixiState extends State<Lixi> {
       angle = (show ?? isFlipped) ? (angle + pi) : 0;
     });
   }
+  _onTap(){
+    flipCard();
+    //flipCard
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: flipCard,
+      onTap: _onTap,
       child: TweenAnimationBuilder(
         tween: Tween<double>(begin: 0, end: angle),
         duration: const Duration(milliseconds: 600),

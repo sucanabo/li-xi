@@ -25,16 +25,15 @@ class LixiState extends State<Lixi> {
   double angle = 0;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     isFlipped = widget.initFlip;
     print('isFliiped: ${widget.initFlip}');
   }
 
-
-  flipCard() {
+  flipCard({bool? show}) {
     setState(() {
-      angle = isFlipped ? (angle + pi) : 0;
+      angle = (show ?? isFlipped) ? (angle + pi) : 0;
     });
   }
 
@@ -80,7 +79,10 @@ class LixiState extends State<Lixi> {
                         ),
                         child: Text(
                           widget.content,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 24),
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontSize: 24,
+                                color: Colors.white,
+                              ),
                         ),
                       ),
                     ),

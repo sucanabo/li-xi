@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:lixi/widget/lixi.dart';
@@ -54,30 +53,30 @@ class _MainPageState extends State<MainPage> {
         LixiItemModel(key: GlobalKey<LixiState>(), content: '${moneys[index]}K'));
   }
 
-  _shuffle() {
+  shuffle() {
 
   }
 
-  _flipAll() {
+  flipAll() {
     for (var item in models) {
       final lixiItem = item.key.currentState;
-      if(lixiItem!.isFlipped == isFlippedAll){
+      if(lixiItem!.isFlipped == isFlippedAll && _isFlippedAllCard()){
         continue;
       }
-      lixiItem?.flipCard();
+      lixiItem.flipCard();
     }
     setState(() {
       isFlippedAll = !isFlippedAll;
     });
   }
-  isAllCardFlipped(){
-    return models.any((element) => element.key.currentState!.isFlipped);
+  _isFlippedAllCard(){
+    return models.any((element) => element.key.currentState!.isFlipped && element.key.currentState!.isFlipped != isFlippedAll);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffffc2b3),
+      backgroundColor: const Color(0xffffc2b3),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -85,8 +84,8 @@ class _MainPageState extends State<MainPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                ElevatedButton(onPressed: _flipAll, child: Text('Xem')),
-                ElevatedButton(onPressed: _shuffle, child: Text('Trộn')),
+                ElevatedButton(onPressed: flipAll, child: Text('Xem')),
+                ElevatedButton(onPressed: shuffle, child: Text('Trộn')),
               ],
             ),
             Expanded(

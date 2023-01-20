@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:lixi/model/background_model.dart';
 import 'package:lixi/state_mixin.dart';
@@ -29,37 +27,22 @@ class _TestPageState extends State<TestPage> with AppStateMixin {
     });
   }
 
-  PosBackground getPosBackground(
-    double width,
-    List<int> data, {
-    int columnCount = 3,
-    double itemHeight = 250,
-  }) {
-    final itemCount = data.length;
-    final double itemWidth = width / columnCount;
-    final double height = (itemCount ~/ columnCount + itemCount % columnCount) * itemHeight;
-    int rowCount = 0;
-    final List<PosItem> pos = List.generate(itemCount, (index) {
-      if (index != 0 && index % columnCount == 0) {
-        rowCount++;
-      }
-      return PosItem(
-        id: index,
-        x: (index % columnCount) * itemWidth,
-        y: rowCount * itemHeight,
-        data: data[index],
-      );
-    });
-    return PosBackground(
-        pos: pos, height: height, width: width, itemWidth: itemWidth, itemHeight: itemHeight);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: shuffle(shuffleFunc: posBg?.shufflePos()),
-        child: const Icon(Icons.shuffle),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Row(
+          children: [
+            FloatingActionButton(
+              onPressed: appShuffle(() {
+                posBg?.shufflePos();
+                setState(() {});
+              }),
+              child: const Icon(Icons.shuffle),
+            )
+          ],
+        ),
       ),
       body: posBg == null
           ? const Center(child: CircularProgressIndicator())
@@ -78,14 +61,12 @@ class _TestPageState extends State<TestPage> with AppStateMixin {
                           duration: config.animationDuration,
                           top: posBg!.pos[index].y,
                           left: posBg!.pos[index].x,
-                          child: Container(
-                            child: Lixi(
-                              margin: 8,
-                              width: posBg!.itemWidth,
-                              height: posBg!.itemHeight,
-                              content: '${posBg!.pos[index].data} K',
-                              onSelect: () {},
-                            ),
+                          child: Lixi(
+                            margin: 8,
+                            width: posBg!.itemWidth,
+                            height: posBg!.itemHeight,
+                            money: '${posBg!.pos[index].data} K',
+                            onSelect: () {},
                           ));
                     })
                   ],

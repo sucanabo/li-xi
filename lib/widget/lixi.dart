@@ -5,18 +5,22 @@ import 'package:flutter/material.dart';
 class Lixi extends StatefulWidget {
   final double height;
   final double width;
-  final String content;
+  final String money;
   final bool initFlip;
   final double margin;
-  final Function() onSelect;
+  final double moneyFontSize;
+  final Function()? onSelect;
+  final Function(bool isFlip)? onFlip;
 
   const Lixi({
     Key? key,
-    required this.content,
-    required this.onSelect,
+    required this.money,
+    this.onSelect,
+    this.onFlip,
     this.initFlip = false,
     this.width = 310,
     this.height = 474,
+    this.moneyFontSize = 24,
     this.margin = 0,
   }) : super(key: key);
 
@@ -35,25 +39,39 @@ class LixiState extends State<Lixi> {
   }
 
   flipCard({bool? show}) {
+    print('isNotnull: ${widget.onSelect}');
+    if (widget.onSelect == null) {
+      print('not null');
+      if (isFlipped == false) {
+        print('equal false');
+        setState(() {
+          angle = (angle + pi);
+        });
+      }
+      widget.onFlip?.call(isFlipped);
+      return;
+    }
+    print('continew');
     setState(() {
-      angle = (show ?? isFlipped) ? (angle + pi) : 0;
+      angle = (show ?? isFlipped) ? 0 : (angle + pi);
     });
+    widget.onFlip?.call(isFlipped);
   }
 
   _onTap() {
     flipCard();
-    //flipCard
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _onTap,
+      onTap: widget.onSelect ?? _onTap,
       child: TweenAnimationBuilder(
         tween: Tween<double>(begin: 0, end: angle),
-        duration: const Duration(milliseconds: 600),
+        duration: const Duration(milliseconds: 700),
         builder: (context, double val, _) {
-          isFlipped = !(val >= pi / 2);
+          isFlipped = val >= pi / 2;
+          print('lixiFlip: $isFlipped');
           return Transform(
             alignment: Alignment.center,
             transform: Matrix4.identity()
@@ -63,35 +81,37 @@ class LixiState extends State<Lixi> {
               width: widget.width,
               height: widget.height,
               child: isFlipped
-                  ? Container(
-                      margin: EdgeInsets.all(widget.margin),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.0),
-                        image: const DecorationImage(
-                          image: AssetImage('assets/lixi_back.jpeg'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    )
-                  : Transform(
+                  ? Transform(
                       alignment: Alignment.center,
                       transform: Matrix4.identity()..rotateY(pi),
                       child: Container(
-                        alignment: Alignment.topCenter,
+                        alignment: Alignment.topCenter + const Alignment(0, 0.65),
+                        margin: EdgeInsets.all(widget.margin),
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12.0),
                           image: const DecorationImage(
                             image: AssetImage('assets/lixi_front.jpeg'),
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fill,
                           ),
                         ),
                         child: Text(
-                          widget.content,
+                          widget.money,
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontSize: 24,
+                                fontSize: widget.moneyFontSize,
                                 color: Colors.white,
                               ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  : Container(
+                      margin: EdgeInsets.all(widget.margin),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.0),
+                        image: const DecorationImage(
+                          image: AssetImage('assets/lixi_back.jpeg'),
+                          fit: BoxFit.fill,
                         ),
                       ),
                     ),

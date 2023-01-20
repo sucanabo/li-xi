@@ -7,6 +7,7 @@ class Lixi extends StatefulWidget {
   final double width;
   final String content;
   final bool initFlip;
+  final double margin;
   final Function() onSelect;
 
   const Lixi({
@@ -16,6 +17,7 @@ class Lixi extends StatefulWidget {
     this.initFlip = false,
     this.width = 310,
     this.height = 474,
+    this.margin = 0,
   }) : super(key: key);
 
   @override
@@ -37,7 +39,8 @@ class LixiState extends State<Lixi> {
       angle = (show ?? isFlipped) ? (angle + pi) : 0;
     });
   }
-  _onTap(){
+
+  _onTap() {
     flipCard();
     //flipCard
   }
@@ -61,6 +64,7 @@ class LixiState extends State<Lixi> {
               height: widget.height,
               child: isFlipped
                   ? Container(
+                      margin: EdgeInsets.all(widget.margin),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12.0),
                         image: const DecorationImage(

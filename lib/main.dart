@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lixi/test.dart';
 import 'package:lixi/widget/lixi.dart';
 
 void main() {
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: SafeArea(
-        child: MainPage(),
+        child: TestPage(),
       ),
     );
   }
@@ -117,7 +118,7 @@ class _MainPageState extends State<MainPage> {
                 itemBuilder: (context, index) => Lixi(
                   key: models[index].key,
                   content: models[index].content,
-
+                  onSelect: () {},
                 ),
               ),
             ),

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:lixi/const/value.dart';
 
 class Lixi extends StatefulWidget {
   final double height;
@@ -54,7 +55,6 @@ class LixiState extends State<Lixi> {
         duration: const Duration(milliseconds: 700),
         builder: (context, double val, _) {
           isFlipped = val >= pi / 2;
-          print('lixiFlip: $isFlipped');
           return Transform(
             alignment: Alignment.center,
             transform: Matrix4.identity()
@@ -73,8 +73,8 @@ class LixiState extends State<Lixi> {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12.0),
-                          image: const DecorationImage(
-                            image: AssetImage('assets/lixi_front.jpeg'),
+                          image: DecorationImage(
+                            image: AssetImage(AppConst.dfLixiImgFrontPath),
                             fit: BoxFit.fill,
                           ),
                         ),
@@ -92,8 +92,8 @@ class LixiState extends State<Lixi> {
                       margin: EdgeInsets.all(widget.margin),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12.0),
-                        image: const DecorationImage(
-                          image: AssetImage('assets/lixi_back.jpeg'),
+                        image: DecorationImage(
+                          image: AssetImage(AppConst.dfLixiImgBackPath),
                           fit: BoxFit.fill,
                         ),
                       ),

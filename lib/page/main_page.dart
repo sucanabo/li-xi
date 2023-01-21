@@ -28,18 +28,27 @@ class LixiItemModel {
 class _MainPageState extends State<MainPage> with AppStateMixin {
   late final AppProvider appProvider;
   PosBackground? posBg;
-  final List<int> moneys = [100, 50, 10, 50, 20, 500, 35, 20, 1];
-  late final List<LixiItemModel> models;
+  late List<LixiItemModel> models;
   bool _isShuffle = false;
 
   @override
   void initState() {
     super.initState();
-    appProvider = context.read<AppProvider>()..initState();
-    models = List.generate(moneys.length,
-        (index) => LixiItemModel(key: GlobalKey<LixiState>(), content: '${moneys[index]}K'));
+    appProvider = context.read<AppProvider>()
+      ..initState()
+      ..addListener(() {
+        print('listener');
+        loadPageState();
+      });
+  }
+
+  loadPageState() {
+    final moneys = context.read<AppProvider>().lixiData;
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
+        models = List.generate(moneys.length,
+            (index) => LixiItemModel(key: GlobalKey<LixiState>(), content: '${moneys[index]}K'));
         posBg = getPosBackground(
           MediaQuery.of(context).size.width - 32,
           moneys,
@@ -123,7 +132,8 @@ class _MainPageState extends State<MainPage> with AppStateMixin {
                                     width: posBg!.width,
                                     height: posBg!.height,
                                   ),
-                                  ...List.generate(moneys.length, (index) {
+                                  ...List.generate(context.read<AppProvider>().lixiData.length,
+                                      (index) {
                                     return AnimatedPositioned(
                                         duration: config.animationDuration,
                                         top: posBg!.pos[index].y,

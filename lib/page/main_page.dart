@@ -5,6 +5,7 @@ import 'package:lixi/model/background_model.dart';
 import 'package:lixi/page/setting_page.dart';
 import 'package:lixi/provider/app_provider.dart';
 import 'package:lixi/state_mixin.dart';
+import 'package:lixi/widget/debounce_button.dart';
 import 'package:lixi/widget/lixi.dart';
 import 'package:confetti/confetti.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +38,6 @@ class _MainPageState extends State<MainPage> with AppStateMixin {
     appProvider = context.read<AppProvider>()
       ..initState()
       ..addListener(() {
-        print('listener');
         loadPageState();
       });
   }
@@ -104,15 +104,19 @@ class _MainPageState extends State<MainPage> with AppStateMixin {
                         context, MaterialPageRoute(builder: (_) => const SettingPage())),
                     child: Text('Cài đặt'),
                   ),
-                  ElevatedButton(
-                    onPressed: flipAll,
-                    child: Text('Xem hết'),
+                  DebounceButton(
+                    onTap: flipAll,
+                    text: 'Xem hết',
                   ),
-                  ElevatedButton(
-                    onPressed: closeAll,
-                    child: Text('Úm hết'),
+                  DebounceButton(
+                    onTap: closeAll,
+                    text: 'Úm hết',
                   ),
-                  ElevatedButton(onPressed: shuffle, child: const Text('Trộn')),
+                  DebounceButton(
+                    onTap: shuffle,
+                    text: 'Trộn',
+                    debounceTime: Duration(milliseconds: 35000),
+                  ),
                 ],
               ),
             ),
@@ -132,9 +136,10 @@ class _MainPageState extends State<MainPage> with AppStateMixin {
                                     width: posBg!.width,
                                     height: posBg!.height,
                                   ),
-                                  ...List.generate(context.read<AppProvider>().lixiData.length,
-                                      (index) {
-                                    return AnimatedPositioned(
+                                  ...List.generate(
+                                    context.read<AppProvider>().lixiData.length,
+                                    (index) {
+                                      return AnimatedPositioned(
                                         duration: config.animationDuration,
                                         top: posBg!.pos[index].y,
                                         left: posBg!.pos[index].x,
@@ -152,68 +157,67 @@ class _MainPageState extends State<MainPage> with AppStateMixin {
                                                     if (models[index].key.currentState!.isFlipped)
                                                       return;
                                                     Navigator.push(
-                                                        context,
-                                                        PageRouteBuilder(
-                                                            opaque: false,
-                                                            barrierDismissible: true,
-                                                            barrierColor:
-                                                                Colors.black.withOpacity(0.8),
-                                                            pageBuilder: (context, _, __) {
-                                                              ConfettiController confettiCtr =
-                                                                  ConfettiController();
-                                                              return Padding(
-                                                                padding: const EdgeInsets.symmetric(
-                                                                  vertical: 100,
-                                                                  horizontal: 32,
-                                                                ),
-                                                                child: Stack(
-                                                                  alignment: Alignment.topCenter,
-                                                                  children: [
-                                                                    Align(
-                                                                      alignment: Alignment.center,
-                                                                      child: Hero(
-                                                                        tag: models[index].key,
-                                                                        child: Lixi(
-                                                                          moneyFontSize: 80,
-                                                                          money:
-                                                                              models[index].content,
-                                                                          onFlipChange: (bool
-                                                                              isFlipped) async {
-                                                                            if (isFlipped == true) {
-                                                                              Navigator.pop(
-                                                                                  context);
-                                                                              return;
-                                                                            }
-                                                                            confettiCtr.play();
-                                                                            models[index]
-                                                                                .key
-                                                                                .currentState!
-                                                                                .flipCard();
-                                                                            await Future.delayed(
-                                                                                const Duration(
-                                                                                    seconds: 2),
-                                                                                () => confettiCtr
-                                                                                    .stop());
-                                                                          },
-                                                                        ),
-                                                                      ),
+                                                      context,
+                                                      PageRouteBuilder(
+                                                        opaque: false,
+                                                        barrierDismissible: true,
+                                                        barrierColor: Colors.black.withOpacity(0.8),
+                                                        pageBuilder: (context, _, __) {
+                                                          ConfettiController confettiCtr =
+                                                              ConfettiController();
+                                                          return Padding(
+                                                            padding: const EdgeInsets.symmetric(
+                                                              vertical: 100,
+                                                              horizontal: 32,
+                                                            ),
+                                                            child: Stack(
+                                                              alignment: Alignment.topCenter,
+                                                              children: [
+                                                                Align(
+                                                                  alignment: Alignment.center,
+                                                                  child: Hero(
+                                                                    tag: models[index].key,
+                                                                    child: Lixi(
+                                                                      moneyFontSize: 80,
+                                                                      money: models[index].content,
+                                                                      onFlipChange:
+                                                                          (bool isFlipped) async {
+                                                                        if (isFlipped == true) {
+                                                                          Navigator.pop(context);
+                                                                          return;
+                                                                        }
+                                                                        confettiCtr.play();
+                                                                        models[index]
+                                                                            .key
+                                                                            .currentState!
+                                                                            .flipCard();
+                                                                        await Future.delayed(
+                                                                            const Duration(
+                                                                                seconds: 2),
+                                                                            () =>
+                                                                                confettiCtr.stop());
+                                                                      },
                                                                     ),
-                                                                    ConfettiWidget(
-                                                                      confettiController:
-                                                                          confettiCtr,
-                                                                      blastDirectionality:
-                                                                          BlastDirectionality
-                                                                              .explosive,
-                                                                      numberOfParticles: 50,
-                                                                    )
-                                                                  ],
+                                                                  ),
                                                                 ),
-                                                              );
-                                                            }));
+                                                                ConfettiWidget(
+                                                                  confettiController: confettiCtr,
+                                                                  blastDirectionality:
+                                                                      BlastDirectionality.explosive,
+                                                                  numberOfParticles: 50,
+                                                                )
+                                                              ],
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    );
                                                   },
                                           ),
-                                        ));
-                                  })
+                                        ),
+                                      );
+                                    },
+                                  )
                                 ],
                               ),
                             ),

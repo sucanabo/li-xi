@@ -9,4 +9,5 @@ class AppConst {
   static bool dfLixiFrontNetwork = false;
   static bool dfLixiBackNetwork = false;
   static List<int> dfLixiData = [500, 200, 100, 50, 20, 10, 5, 2, 1];
+  static Duration dfAnimationDuration = Duration(milliseconds: 700);
 }

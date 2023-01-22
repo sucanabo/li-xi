@@ -24,6 +24,14 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            ),
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.amber),
+          ),
+        ),
       ),
       home: const SafeArea(
         child: MainPage(),

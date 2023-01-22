@@ -11,8 +11,13 @@ class AppProvider with ChangeNotifier {
   List<int> lixiData = [];
   late String lixiImgFrontPath;
   late String lixiImgBackPath;
-  late bool isLixiFontNetwork;
-  late bool isLixiBackNetwork;
+  late ImageType lixiFrontType;
+  late ImageType lixiBackType;
+  Map<int, ImageType> _imgMapper = {
+    0: ImageType.assets,
+    1: ImageType.file,
+    2: ImageType.network,
+  };
 
   void initState() async {
     final pref = await SharedPreferences.getInstance();
@@ -25,8 +30,12 @@ class AppProvider with ChangeNotifier {
     }
     //load theme color
     bgColor = Color(pref.getInt(PrefKey.bgColor) ?? AppConst.dfBgColor);
-    isLixiFontNetwork = pref.getBool(PrefKey.lixiFrontNetwork) ?? AppConst.dfLixiFrontNetwork;
-    isLixiBackNetwork = pref.getBool(PrefKey.lixiBackNetwork) ?? AppConst.dfLixiBackNetwork;
+    lixiFrontType = pref.getInt(PrefKey.lixiFrontType) != null
+        ? _imgMapper[pref.getInt(PrefKey.lixiFrontType)]!
+        : AppConst.dfLixiType;
+    lixiBackType = pref.getInt(PrefKey.lixiBackType) != null
+        ? _imgMapper[pref.getInt(PrefKey.lixiBackType)]!
+        : AppConst.dfLixiType;
     lixiImgFrontPath = pref.getString(PrefKey.lixiFrontPath) ?? AppConst.dfLixiImgFrontPath;
     lixiImgBackPath = pref.getString(PrefKey.lixiBackPath) ?? AppConst.dfLixiImgBackPath;
     isLoading = false;
@@ -45,5 +54,34 @@ class AppProvider with ChangeNotifier {
     notifyListeners();
     final pref = await SharedPreferences.getInstance();
     pref.setString(PrefKey.lixiData, jsonEncode(lixiData));
+  }
+
+  void setLixiTheme(
+      {ImageType? frontType, ImageType? backType, String? frontPath, String? backPath}) async {
+    final pref = await SharedPreferences.getInstance();
+    lixiFrontType = frontType ?? lixiFrontType;
+    lixiBackType = backType ?? lixiBackType;
+    lixiImgFrontPath = frontPath ?? lixiImgFrontPath;
+    lixiImgBackPath = backPath ?? lixiImgBackPath;
+    _imgMapper.forEach((key, value) {
+      if (value == lixiFrontType) {
+        pref.setInt(PrefKey.lixiFrontType, key);
+        pref.setString(PrefKey.lixiFrontPath, lixiImgFrontPath);
+      }
+      if (value == lixiBackType) {
+        pref.setInt(PrefKey.lixiBackType, key);
+        pref.setString(PrefKey.lixiBackPath, lixiImgBackPath);
+      }
+    });
+    notifyListeners();
+  }
+
+  setLixiThemeDefault({required bool isFront}) {
+    setLixiTheme(
+      frontType: isFront ? AppConst.dfLixiType : null,
+      backType: !isFront ? AppConst.dfLixiType : null,
+      frontPath: isFront ? AppConst.dfLixiImgFrontPath : null,
+      backPath: !isFront ? AppConst.dfLixiImgBackPath : null,
+    );
   }
 }

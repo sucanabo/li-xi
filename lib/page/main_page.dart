@@ -96,6 +96,7 @@ class _MainPageState extends State<MainPage> with AppStateMixin {
         : Scaffold(
             backgroundColor: context.watch<AppProvider>().bgColor,
             bottomNavigationBar: Container(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewPadding.bottom + 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -105,17 +106,16 @@ class _MainPageState extends State<MainPage> with AppStateMixin {
                     child: Text('Cài đặt'),
                   ),
                   DebounceButton(
-                    onTap: flipAll,
+                    onPressed: flipAll,
                     text: 'Xem hết',
                   ),
                   DebounceButton(
-                    onTap: closeAll,
+                    onPressed: closeAll,
                     text: 'Úm hết',
                   ),
-                  DebounceButton(
-                    onTap: shuffle,
-                    text: 'Trộn',
-                    debounceTime: Duration(milliseconds: 35000),
+                  ElevatedButton(
+                    onPressed: shuffle,
+                    child: Text('Trộn'),
                   ),
                 ],
               ),

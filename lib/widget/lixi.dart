@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:lixi/const/value.dart';
+import 'package:lixi/provider/app_provider.dart';
+import 'package:provider/provider.dart';
 
 class Lixi extends StatefulWidget {
   final double height;
@@ -74,8 +77,9 @@ class LixiState extends State<Lixi> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12.0),
                           image: DecorationImage(
-                            image: AssetImage(AppConst.dfLixiImgFrontPath),
-                            fit: BoxFit.fill,
+                            image: buildLixiTheme(context.read<AppProvider>().lixiFrontType,
+                                context.read<AppProvider>().lixiImgFrontPath),
+                            fit: BoxFit.cover,
                           ),
                         ),
                         child: Text(
@@ -93,8 +97,9 @@ class LixiState extends State<Lixi> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12.0),
                         image: DecorationImage(
-                          image: AssetImage(AppConst.dfLixiImgBackPath),
-                          fit: BoxFit.fill,
+                          image: buildLixiTheme(context.read<AppProvider>().lixiBackType,
+                              context.read<AppProvider>().lixiImgBackPath),
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
@@ -103,5 +108,16 @@ class LixiState extends State<Lixi> {
         },
       ),
     );
+  }
+
+  ImageProvider buildLixiTheme(ImageType type, String path) {
+    switch (type) {
+      case ImageType.assets:
+        return AssetImage(path);
+      case ImageType.file:
+        return FileImage(File(path));
+      case ImageType.network:
+        return NetworkImage(path);
+    }
   }
 }

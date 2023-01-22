@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 class DebounceButton extends StatefulWidget {
   final String text;
   final bool isDebounce;
-  final VoidCallback? onTap;
+  final VoidCallback? onPressed;
   final Duration? debounceTime;
 
   const DebounceButton(
-      {Key? key, required this.text, this.onTap, this.isDebounce = false, this.debounceTime})
+      {Key? key, required this.text, this.onPressed, this.isDebounce = false, this.debounceTime})
       : super(key: key);
 
   @override
@@ -48,7 +48,7 @@ class _DebounceButtonState extends State<DebounceButton> {
 
   _buttonPressed() {
     _isEnable.value = false;
-    widget.onTap?.call();
+    widget.onPressed?.call();
     _timer = Timer(_debounceTime, () => _isEnable.value = true);
   }
 }

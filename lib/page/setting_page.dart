@@ -1,11 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:lixi/const/value.dart';
 import 'package:lixi/provider/app_provider.dart';
-import 'package:lixi/widget/change_lixi_theme_dialog.dart';
 import 'package:lixi/widget/enter_lixi_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,7 +23,7 @@ class _SettingPageState extends State<SettingPage> with SettingStateMixin {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Pick color'),
+        title: const Text('Chọn màu nền'),
         content: SingleChildScrollView(
           child: ColorPicker(
             pickerColor: context.watch<AppProvider>().bgColor,
@@ -139,7 +137,7 @@ class _SettingPageState extends State<SettingPage> with SettingStateMixin {
           padding: EdgeInsets.all(16),
           child: Column(
             children: [
-              buildRowData('Nhập:',
+              buildRowData('Nhập lì xì:',
                   onTap: _enterLixi, editWidget: SizedBox(child: const Icon(Icons.edit))),
               buildRowData(
                 'Màu nền:',
@@ -154,7 +152,7 @@ class _SettingPageState extends State<SettingPage> with SettingStateMixin {
                 ),
               ),
               buildRowData(
-                'Nền lì xì:',
+                'Nền lì xì: (Trước - sau)',
                 editWidget: Row(children: [
                   GestureDetector(
                     onTap: () => _changeLixiTheme(isFront: true, type: _providerRead.lixiFrontType),

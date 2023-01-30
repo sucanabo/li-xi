@@ -1,8 +1,8 @@
-# lixi (Lucky moeny - Red pocket)
+# lixi (Lucky money - Red pocket)
 
 A mini Flutter project.
 
-##Features
+## Features
 - Flip lixi
 - Shuffle lixi
 - Setting:
